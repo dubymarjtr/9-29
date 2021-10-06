@@ -3,16 +3,15 @@ import { promises as fs } from "fs";
 
 const app = express();
 
-app.get("/hello", (_, res) => {
-  fs.readFile("./hello.html", "utf-8").then((contents) => {
-    res.end(contents);
-  });
-});
-
-app.get("/bye", (_, res) => {
-  fs.readFile("./bye.html", "utf-8").then((contents) => {
-    res.end(contents);
-  });
+app.get("/:page", (req, res) => {
+  fs.readFile(`${req.params.page}.json`, "utf-8")
+    .then((contents) => {
+      res.json(contents);
+    })
+    .catch(() => {
+      res.statusCode = 404;
+      res.end("404!");
+    });
 });
 
 app.listen(3000, () => {
